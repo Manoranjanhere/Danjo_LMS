@@ -10,7 +10,7 @@ This is a Django-based Learning Management System (LMS) designed to manage and t
 - Python 3.x
 - Docker (if running in containers)
 - Docker Compose (for multi-container applications)
-- Vercel account (for deployment)
+- Render account (for deployment)
 
 ---
 
@@ -79,7 +79,7 @@ The project is a Django-based Learning Management System (LMS) that uses several
 - **JWT Authentication:** Used for user authentication via JSON Web Tokens.
 - **API Design:** Created RESTful APIs using Django REST Framework to manage books, users, and reports.
 - **Docker Compose:** Used to set up multi-container applications, including the Django app and PostgreSQL database.
-- **Vercel Deployment:** Deployment using Docker on Vercel for scalable and easy deployment.
+- **Render Deployment:** Deployment using Docker on Render for scalable and easy deployment.
 
 ---
 
