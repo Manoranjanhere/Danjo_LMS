@@ -1,0 +1,104 @@
+{% load static %}
+<div class="container-fluid">
+    <form action="" id="sub_category-form">
+        <input type="hidden" name="id" value="{{sub_category.id}}">
+        <div class="mb-3">
+            <label for="category" class="control-label">Category</label>
+            <select type="text" id="category" name="category" class="form-select form-select-sm rounded-0" required>
+                {% if not sub_category %}
+                <option value="" selected disabled></option>
+                {% else %}
+                <option value="" disabled></option>
+                {% endif %}
+                {% for category in categories %}
+                {% if sub_category.category.id == category.id %}
+                <option value="{{category.id}}" selected>{{category.name}}</option>
+                {% else %}
+                <option value="{{category.id}}">{{category.name}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="name" class="control-label">Name</label>
+            <input type="text" id="name" name="name" class="form-control form-control-sm rounded-0" value="{{sub_category.name}}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="control-label">Description</label>
+            <textarea rows="3" id="description" name="description" class="form-control form-control-sm rounded-0" required>{{sub_category.description}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="status" class="control-label">Status</label>
+            <select type="text" id="status" name="status" class="form-select form-select-sm rounded-0" required>
+                {% if sub_category.status == '1' %}
+                <option value="1" selected>Active</option>
+                {% else %}
+                <option value="1">Active</option>
+                {% endif %}
+                {% if sub_category.status == '2' %}
+                <option value="2" selected>Inactive</option>
+                {% else %}
+                <option value="2">Inactive</option>
+                {% endif %}
+            </select>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#uni_modal').on('shown.bs.modal', function(){
+            $('#category').select2({
+                placeholder:"Please Select Category Here",
+                width:"100%",
+                dropdownParent:$('#uni_modal'),
+                selectionCssClass:"form-control form-control-sm rounded-0"
+            })
+        })
+        $('#sub_category-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                url: "{% url 'save-sub_category' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.text(resp.msg)
+                    } else {
+                        el.text("An error occured", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

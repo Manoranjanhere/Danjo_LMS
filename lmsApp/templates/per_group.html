@@ -1,0 +1,161 @@
+{% extends 'base.html' %} {% load static %} {% block pageContent %}
+<style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: unset !important;
+    }
+</style>
+<section class="py-4">
+    <div class="container">
+        <h3 class="fw-bolder text-center">Members Per Group</h3>
+        <center>
+            <hr class="bg-primary opacity-100" style="height:3px" width="5%">
+        </center>
+        <div class="card rounded-0 shadow">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <fieldset class="p-2 border mb-4">
+                        <legend class="w-auto px-3">Filter</legend>
+                        <form action="{% url 'group-member' %}" method="GET">
+                            <div class="container-fluid">
+                                <div class="row align-items-end">
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                        <label class="control-label" for="group">Choose Group</label>
+                                        <select name="group" id="group" class="form-select form-select-sm rounded-0" required>
+                                            {% if not selected_group %}
+                                            <option value="" selected disabled></option>
+                                            {% else %}
+                                            <option value="" disabled></option>
+                                            {% endif %}
+                                            {% for group in groups %}
+                                            {% if selected_group.id == group.id %}
+                                            <option value="{{group.id}}" selected>{{group}}</option>
+                                            {% else %}
+                                            <option value="{{group.id}}">{{group}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                        <label class="control-label" for="status">Status</label>
+                                        <select name="status" id="status" class="form-select form-select-sm rounded-0" required>
+                                            {% if status == '1' %}
+                                            <option value="1" selected>Active</option>
+                                            {% else %}
+                                            <option value="1">Active</option>
+                                            {% endif %}
+                                            {% if status == '2' %}
+                                            <option value="2" selected>Inactive</option>
+                                            {% else %}
+                                            <option value="2">Inactive</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                        <button class="btn btn-sm btn-primary rounded-0 bg-gradient-primary"><i class="fa fa-filter"></i> Filter</button> {% if selected_group %}
+                                        <button class="btn btn-sm btn-light rounded-0 bg-gradient-light border" type="button" id="print"><i class="fa fa-print"></i> Print</button> {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <div id="printout">
+                        <table class="table table-bordered table-striped" id="member-tbl">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="15%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">DateTime Added</th>
+                                    <th class="text-center">Code</th>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Contact</th>
+                                    <th class="text-center">Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in members %}
+                                <tr>
+                                    <td class="text-center">{{ forloop.counter }}</td>
+                                    <td>{{ member.date_added|date:"Y-m-d h:i A" }}</td>
+                                    <td>{{ member.code }}</td>
+                                    <td>{{ member.name}}</td>
+                                    <td>{{ member.contact}}</td>
+                                    <td>{{ member.email}}</td>
+                                </tr>
+                                {% endfor %} {% if not members %}
+                                <tr>
+                                    <th class="text-center" colspan="6">No Data</th>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<noscript id="print-header">
+<div>
+    <div class="d-flex align-items-center">
+        <div class="col-2 text-center">
+            <img src="{% static 'assets/default/img/logo.jpg' %}" alt="System Logo" style="height:4em;width:4em;object-fit:cover;object-position:center center" class="img-thumbnail rounded-circle">
+        </div>
+        <div class="col-8 text-center">
+            <h4 class="fw-bold text-center mb-0">{{ system_name }}</h4>
+            <h5 class="fw-bold text-center mb-0">{% if status == '1' %}Active{% else %}Inactive{% endif %} Members</h5>
+            <div class="text-center">of</div>
+            <h3 class="text-center mb-0">{{selected_group}}</h3>
+        </div>
+    </div>
+    <hr>
+</div>
+</noscript> {% endblock pageContent %} {% block ScriptBlock %}
+<script>
+    $(function() {
+        $('#group').select2({
+            placeholder: "Please Select Group Here",
+            width: "100%",
+            selectionCssClass: 'form-control form-control-sm rounded-0 lh-auto'
+        })
+        $('#printout table').find('td, th').addClass("align-middle px-1 py-1")
+        $('#print').click(function() {
+            var h = $('head').clone()
+            var ph = $($('noscript#print-header').html()).clone()
+            var p = $('#printout').clone()
+            start_loader()
+            h.find('link').each(function() {
+                var href = $(this).attr('href')
+                $(this).attr("href", "{{ system_host }}" + href)
+            })
+
+            h.find('script').each(function() {
+                var src = $(this).attr('src')
+                $(this).attr("src", "{{ system_host }}" + src)
+            })
+            ph.find('img').each(function() {
+                var src = $(this).attr('src')
+                $(this).attr("src", "{{ system_host }}" + src)
+            })
+            var nw = window.open("", "_blank", "height=" + ($(window).height() * .8) + ",width=" + ($(window).width() * .8) + ",top=" + ($(window).height() * .1) + ",left=" + ($(window).width() * .1) + "")
+            nw.document.querySelector('head').innerHTML = h[0].outerHTML
+            nw.document.querySelector('body').innerHTML = ph[0].outerHTML
+            nw.document.querySelector('body').innerHTML += p[0].outerHTML
+            nw.document.close()
+            setTimeout(() => {
+                nw.print()
+                setTimeout(() => {
+                    nw.close()
+                    end_loader()
+                }, 300)
+            }, 500)
+        })
+    })
+</script>
+{% endblock ScriptBlock %}

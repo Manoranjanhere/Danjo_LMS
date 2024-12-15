@@ -1,0 +1,26 @@
+{% load static %} {% load humanize %}
+<style>
+    #uni_modal .modal-footer {
+        display: none
+    }
+    
+    #uni_modal .modal-sub-footer {
+        display: flex
+    }
+</style>
+<div class="container-fluid" id="e-details">
+    <div class="lh-1">
+        <dl>
+            <dt>Name</dt>
+            <dd class="ps-4">{{category.name}}</dd>
+            <dt>Description</dt>
+            <dd class="ps-4">{{category.description}}</dd>
+            <dt>Status</dt>
+            <dd class="ps-4">
+                {% if category.status == '1' %}
+                <span class="badge badge-success bg-gradient bg-success px-3 rounded-pill bg-opacity-75 text-sm py-1">Active</span> {% else %}
+                <span class="badge badge-secondary bg-gradient bg-secondary px-3 rounded-pill bg-opacity-75 text-sm py-1">Inactive</span> {% endif %}
+            </dd>
+        </dl>
+    </div>
+</div>

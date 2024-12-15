@@ -1,0 +1,148 @@
+{% load static %}
+<style>
+    #borrow-img {
+        max-width: 100%;
+        max-height: 10em;
+        object-fit: scale-down;
+        object-position: center center;
+    }
+</style>
+<div class="container-fluid">
+    <form action="" id="borrow-form">
+        <input type="hidden" name="id" value="{{borrow.id}}">
+        <input type="hidden" name="code" value="generate_code">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="book" class="control-label">Book</label>
+                    <select type="text" id="book" name="book" class="form-select form-select-sm rounded-0" required>
+                        {% if not borrow %}
+                        <option value="" selected disabled></option>
+                        {% else %}
+                        <option value="" disabled></option>
+                        {% endif %}
+                        {% for book in books %}
+                        {% if borrow.book.id == book.id %}
+                        <option value="{{book.id}}" selected>{{book}}</option>
+                        {% else %}
+                        <option value="{{book.id}}">{{book}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="student" class="control-label">Student</label>
+                    <select type="text" id="student" name="student" class="form-select form-select-sm rounded-0" required>
+                        {% if not borrow %}
+                        <option value="" selected disabled></option>
+                        {% else %}
+                        <option value="" disabled></option>
+                        {% endif %}
+                        {% for student in students %}
+                        {% if borrow.student.id == student.id %}
+                        <option value="{{student.id}}" selected>{{student}}</option>
+                        {% else %}
+                        <option value="{{student.id}}">{{student}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="borrowing_date" class="control-label">Date Borrow</label>
+                    <input type="date" id="borrowing_date" name="borrowing_date" class="form-control form-control-sm rounded-0" value="{% if borrow %}{{borrow.borrowing_date|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" required>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="return_date" class="control-label">Date to Return</label>
+                    <input type="date" id="return_date" name="return_date" class="form-control form-control-sm rounded-0" value="{{borrow.return_date|date:'Y-m-d'}}" min="{% now 'Y-m-d' %}" required>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="status" class="control-label">Status</label>
+                    <select type="text" id="status" name="status" class="form-select form-select-sm rounded-0" required>
+                        {% if borrow.status == '1' %}
+                        <option value="1" selected>Pending</option>
+                        {% else %}
+                        <option value="1">Pending</option>
+                        {% endif %}
+                        {% if borrow.status == '2' %}
+                        <option value="2" selected>Returned</option>
+                        {% else %}
+                        <option value="2">Returned</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#uni_modal').on('shown.bs.modal', function(){
+            $('#student').select2({
+                placeholder:"Please Select Student Here",
+                width:"100%",
+                dropdownParent:$('#uni_modal'),
+                selectionCssClass:"form-control form-control-sm rounded-0"
+            })
+            $('#book').select2({
+                placeholder:"Please Select Book Here",
+                width:"100%",
+                dropdownParent:$('#uni_modal'),
+                selectionCssClass:"form-control form-control-sm rounded-0"
+            })
+        })
+        $('#borrow-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                url: "{% url 'save-borrow' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.text(resp.msg)
+                    } else {
+                        el.text("An error occured", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

@@ -1,0 +1,63 @@
+ {% load static %} {% load humanize %}
+<style>
+    #uni_modal .modal-footer {
+        display: none
+    }
+    
+    #uni_modal .modal-sub-footer {
+        display: flex
+    }
+</style>
+<div class="container-fluid" id="e-details">
+    <fieldset class="container-fluid px-2 pb-2 border mb-2">
+        <legend class="px-4 w-auto">Student Details</legend>
+        <div class="row mx-0">
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">School ID</div>
+            <div class="col-8 m-0 border">{{ borrow.student.code }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Department</div>
+            <div class="col-8 m-0 border">{{ borrow.student.department }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Course</div>
+            <div class="col-8 m-0 border">{{ borrow.student.course }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Name</div>
+            <div class="col-8 m-0 border">{{ borrow.student.name }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Contact #</div>
+            <div class="col-8 m-0 border">{{ borrow.student.contact }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Email</div>
+            <div class="col-8 m-0 border">{{ borrow.student.email }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Address</div>
+            <div class="col-8 m-0 border">{{ borrow.student.Address }}</div>
+        </div>
+    </fieldset>
+    <fieldset class="container-fluid px-2 pb-2 border mb-2">
+        <legend class="px-4 w-auto">Book Details</legend>
+        <div class="row mx-0">
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">ISBN</div>
+            <div class="col-8 m-0 border">{{ borrow.book.isbn }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Title</div>
+            <div class="col-8 m-0 border">{{ borrow.book.title }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Category</div>
+            <div class="col-8 m-0 border">{{ borrow.book.sub_category.category }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Sub Category</div>
+            <div class="col-8 m-0 border">{{ borrow.book.sub_category }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Author</div>
+            <div class="col-8 m-0 border">{{ borrow.book.author }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Publisher</div>
+            <div class="col-8 m-0 border">{{ borrow.book.publisher }}</div>
+        </div>
+    </fieldset>
+    <fieldset class="container-fluid px-2 pb-2 border mb-2">
+        <legend class="px-4 w-auto">Borrowing Transaction Details</legend>
+        <div class="row mx-0">
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Date Borred</div>
+            <div class="col-8 m-0 border">{{ borrow.borrowing_date|date:"F d, Y" }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Due Date</div>
+            <div class="col-8 m-0 border">{{ borrow.return_date|date:"F d, Y" }}</div>
+            <div class="col-4 m-0 border bg-gradient bg-primary fw-bold text-light">Status</div>
+            <div class="col-8 m-0 border text-center">
+                {% if borrow.status == '1' %}
+                <span class="badge badge-secondary bg-gradient bg-secondary px-3 rounded-pill bg-opacity-75 text-sm py-1">Pending</span> {% else %}
+                <span class="badge badge-primary bg-gradient bg-primary px-3 rounded-pill bg-opacity-75 text-sm py-1">Returned</span> {% endif %}
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,45 @@
+ {% load static %} {% load humanize %}
+<style>
+    #uni_modal .modal-footer {
+        display: none
+    }
+    
+    #uni_modal .modal-sub-footer {
+        display: flex
+    }
+    
+    #book-img {
+        max-width: 100%;
+        max-height: 10em;
+        object-fit: scale-down;
+        object-position: center center
+    }
+</style>
+<div class="container-fluid" id="e-details">
+    <div class="">
+        <dl>
+            <dt>Category</dt>
+            <dd class="ps-4">{{book.sub_category.category}}</dd>
+            <dt>Sub Category</dt>
+            <dd class="ps-4">{{book.sub_category.name}}</dd>
+            <dt>ISBN</dt>
+            <dd class="ps-4">{{book.isbn}}</dd>
+            <dt>Title</dt>
+            <dd class="ps-4">{{book.title}}</dd>
+            <dt>Description</dt>
+            <dd class="ps-4">{{book.description}}</dd>
+            <dt>Author</dt>
+            <dd class="ps-4">{{book.author}}</dd>
+            <dt>Publisher</dt>
+            <dd class="ps-4">{{book.publisher}}</dd>
+            <dt>Date Published</dt>
+            <dd class="ps-4">{{book.date_published|date:"F d, Y h:i A"}}</dd>
+            <dt>Status</dt>
+            <dd class="ps-4">
+                {% if book.status == '1' %}
+                <span class="badge badge-success bg-gradient bg-success px-3 rounded-pill bg-opacity-75 text-sm py-1">Active</span> {% else %}
+                <span class="badge badge-secondary bg-gradient bg-secondary px-3 rounded-pill bg-opacity-75 text-sm py-1">Inactive</span> {% endif %}
+            </dd>
+        </dl>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+{% load static %}
+<style>
+    #student-img {
+        max-width: 100%;
+        max-height: 10em;
+        object-fit: scale-down;
+        object-position: center center;
+    }
+</style>
+<div class="container-fluid">
+    <form action="" id="student-form">
+        <input type="hidden" name="id" value="{{student.id}}">
+        <input type="hidden" name="code" value="generate_code">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-sm-12">
+                <div class="mb-3">
+                    <label for="code" class="control-label">School ID</label>
+                    <input type="text" id="code" name="code" class="form-control form-control-sm rounded-0" value="{{student.code}}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="first_name" class="control-label">First Name</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control form-control-sm rounded-0" value="{{student.first_name}}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="middle_name" class="control-label">Middle Name</label>
+                    <input type="text" id="middle_name" name="middle_name" class="form-control form-control-sm rounded-0" value="{{student.middle_name}}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="last_name" class="control-label">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control form-control-sm rounded-0" value="{{student.last_name}}" required>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-sm-12">
+                <div class="mb-3">
+                    <label for="gender" class="control-label">Gender</label>
+                    <select type="text" id="gender" name="gender" class="form-select form-select-sm rounded-0" required>
+                        {% if  student.gender == 'Male' %}
+                            <option selected>Male</option>
+                        {% else %}
+                            <option>Male</option>
+                        {% endif %}
+                        {% if  student.gender == 'Female' %}
+                            <option selected>Female</option>
+                        {% else %}
+                            <option>Female</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="contact" class="control-label">Contact #</label>
+                    <input type="text" id="contact" name="contact" class="form-control form-control-sm rounded-0" value="{{student.contact}}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="control-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control form-control-sm rounded-0" value="{{student.email}}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="control-label">Address</label>
+                    <textarea rows="3" id="address" name="address" class="form-control form-control-sm rounded-0" required>{{student.address}}</textarea>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="department" class="control-label">Department</label>
+                    <input type="text" id="department" name="department" class="form-control form-control-sm rounded-0" value="{{student.department}}" required>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="course" class="control-label">Course</label>
+                    <input type="text" id="course" name="course" class="form-control form-control-sm rounded-0" value="{{student.course}}" required>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="status" class="control-label">Status</label>
+                    <select type="text" id="status" name="status" class="form-select form-select-sm rounded-0" required>
+                        {% if student.status == '1' %}
+                        <option value="1" selected>Active</option>
+                        {% else %}
+                        <option value="1">Active</option>
+                        {% endif %}
+                        {% if student.status == '2' %}
+                        <option value="2" selected>Inactive</option>
+                        {% else %}
+                        <option value="2">Inactive</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#student-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                url: "{% url 'save-student' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.text(resp.msg)
+                    } else {
+                        el.text("An error occured", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>
