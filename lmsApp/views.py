@@ -9,6 +9,13 @@ from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def generate_report_view(request):
+    # Logic to generate the report
+    return HttpResponse("Report generated")
+
 def context_data(request):
     fullpath = request.get_full_path()
     abs_uri = request.build_absolute_uri()

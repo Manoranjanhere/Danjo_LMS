@@ -12,6 +12,19 @@ from django.contrib.auth.base_user import BaseUserManager
 
 
 # Create your models here.
+class Author(models.Model):
+    name = models.CharField(max_length=250)
+    biography = models.TextField(blank=True, null=True)
+    date_added = models.DateTimeField(default=timezone.now)
+    date_created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Authors"
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True, null= True)
@@ -42,7 +55,8 @@ class SubCategory(models.Model):
     def __str__(self):
         return str(f"{self.category} - {self.name}")
 
-class Books(models.Model):
+class Book(models.Model):
+    author = models.ForeignKey(Author, on_delete=models.CASCADE) 
     sub_category = models.ForeignKey(SubCategory, on_delete= models.CASCADE)
     isbn = models.CharField(max_length=250)
     title = models.CharField(max_length=250)
@@ -89,7 +103,7 @@ class Students(models.Model):
 
 class Borrow(models.Model):
     student = models.ForeignKey(Students, on_delete= models.CASCADE, related_name="student_id_fk")
-    book = models.ForeignKey(Books, on_delete= models.CASCADE, related_name="book_id_fk")
+    book = models.ForeignKey(Book, on_delete= models.CASCADE, related_name="book_id_fk")
     borrowing_date = models.DateField()
     return_date = models.DateField()
     status = models.CharField(max_length=2, choices=(('1','Pending'), ('2','Returned')), default = 1)
