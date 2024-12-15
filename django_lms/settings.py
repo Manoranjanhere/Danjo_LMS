@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 SECRET_KEY = 'django-insecure-j7xv%)66l8u0^8sxnj7()z$zll8&a2*_h2r84yeo9f2fidx8^7'
@@ -22,7 +22,7 @@ SECRET_KEY = 'django-insecure-j7xv%)66l8u0^8sxnj7()z$zll8&a2*_h2r84yeo9f2fidx8^7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost','127.0.0.1','danjo-lms.onrender.com']
+ALLOWED_HOSTS = ['danjo-lms.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 
