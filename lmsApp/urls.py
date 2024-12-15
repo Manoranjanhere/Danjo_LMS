@@ -6,9 +6,12 @@ from django.views.generic.base import RedirectView
 
 from django.conf import settings
 from django.conf.urls.static import static
-
+from rest_framework_simplejwt import views as jwt_views
 urlpatterns = [
+    
     path('',views.home, name="home-page"),
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('login',views.login_page,name='login-page'),
     path('register',views.userregister,name='register-page'),
     path('save_register',views.save_register,name='register-user'),

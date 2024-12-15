@@ -152,7 +152,7 @@ class SaveBook(forms.ModelForm):
     status = forms.CharField(max_length=2)
 
     class Meta:
-        model = models.Book
+        model = models.Books
         fields = ('isbn', 'sub_category', 'title', 'description', 'author', 'publisher', 'date_published', 'status', )
 
     def clean_sub_category(self):

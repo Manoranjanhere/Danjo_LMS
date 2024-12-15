@@ -15,6 +15,17 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class ReportView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Your logic to generate and return a report
+        return Response({"message": "Report data"})
+
 # Sample report generation view
 @login_required
 def generate_report_view(request):

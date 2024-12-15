@@ -55,7 +55,7 @@ class SubCategory(models.Model):
     def __str__(self):
         return str(f"{self.category} - {self.name}")
 
-class Book(models.Model):
+class Books(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE) 
     sub_category = models.ForeignKey(SubCategory, on_delete= models.CASCADE)
     isbn = models.CharField(max_length=250)
@@ -103,7 +103,7 @@ class Students(models.Model):
 
 class Borrow(models.Model):
     student = models.ForeignKey(Students, on_delete= models.CASCADE, related_name="student_id_fk")
-    book = models.ForeignKey(Book, on_delete= models.CASCADE, related_name="book_id_fk")
+    book = models.ForeignKey(Books, on_delete= models.CASCADE, related_name="book_id_fk")
     borrowing_date = models.DateField()
     return_date = models.DateField()
     status = models.CharField(max_length=2, choices=(('1','Pending'), ('2','Returned')), default = 1)
