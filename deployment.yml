@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms-app-deployment
+  labels:
+    app: lms-app
+spec:
+  replicas: 2  # Number of instances of your app
+  selector:
+    matchLabels:
+      app: lms-app
+  template:
+    metadata:
+      labels:
+        app: lms-app
+    spec:
+      containers:
+        - name: lms-app
+          image: your-docker-username/your-image-name:latest  # Image from Docker Hub
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: DB_NAME
+              value: "lmsdb"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: DB_HOST
+              value: "db"
+            - name: DB_PORT
+              value: "5432"
+          volumeMounts:
+            - mountPath: /app/static
+              name: static-volume
+            - mountPath: /app/media
+              name: media-volume
+      volumes:
+        - name: static-volume
+          emptyDir: {}
+        - name: media-volume
+          emptyDir: {}
