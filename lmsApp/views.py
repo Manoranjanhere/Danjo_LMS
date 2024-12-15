@@ -11,10 +11,32 @@ from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render
 from django.http import HttpResponse
+import json
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 
+# Sample report generation view
+@login_required
 def generate_report_view(request):
-    # Logic to generate the report
-    return HttpResponse("Report generated")
+    # Example: generate a report of borrowed books
+    borrows = models.Borrow.objects.all()  # Fetch your data here
+
+    context = {
+        'borrows': borrows,
+        'total_borrows': borrows.count(),
+        'report_generated_at': datetime.datetime.now(),
+    }
+
+    # Render the HTML report
+    report_html = render_to_string('reports/report_template.html', context)
+
+    # You can also generate PDFs if needed
+    # pdf = some_pdf_generation_library.generate_pdf(report_html)
+
+    # Return the report HTML
+    return HttpResponse(report_html)
+
+
 
 def context_data(request):
     fullpath = request.get_full_path()

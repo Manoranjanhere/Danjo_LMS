@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Library Borrow Report</h1>
+        <p><strong>Report generated at:</strong> {{ report_generated_at }}</p>
+
+        <table class="table table-bordered table-striped mt-4">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Book Title</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                    <th>Borrow Date</th>
+                    <th>Return Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrows %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ borrow.student.first_name }} {{ borrow.student.last_name }}</td>
+                        <td>{{ borrow.get_status_display }}</td>
+                        <td>{{ borrow.borrow_date }}</td>
+                        <td>{{ borrow.return_date }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><strong>Total Borrowed Books:</strong> {{ total_borrows }}</p>
+    </div>
+</body>
+</html>
