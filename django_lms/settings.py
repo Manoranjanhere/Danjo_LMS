@@ -22,8 +22,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://danjo-lms.onrender.com/",
 ]
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
     "https://danjo-lms.onrender.com/",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 SECRET_KEY = 'django-insecure-j7xv%)66l8u0^8sxnj7()z$zll8&a2*_h2r84yeo9f2fidx8^7'
@@ -59,7 +61,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    
+    'django.middleware.common.CommonMiddleware',  # Keep this below CorsMiddleware
+
 ]
 
 ROOT_URLCONF = 'django_lms.urls'
