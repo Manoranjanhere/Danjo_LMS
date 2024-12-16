@@ -16,6 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+CSRF_TRUSTED_ORIGINS = ['https://danjo-lms.onrender.com']
 
 SECRET_KEY = 'django-insecure-j7xv%)66l8u0^8sxnj7()z$zll8&a2*_h2r84yeo9f2fidx8^7'
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
+
 
 ]
 
@@ -49,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'django_lms.urls'
@@ -156,3 +161,8 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
 }
+CORS_ALLOWED_ORIGINS = [
+    "https://danjo-lms.onrender.com",
+    "http://localhost:8000",  
+]
+
