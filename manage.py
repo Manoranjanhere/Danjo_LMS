@@ -21,5 +21,4 @@ def main():
 if __name__ == "__main__":
     import os
     port = os.environ.get('PORT', '8000')  # Default to 8000 if PORT is not set
-    sys.argv += ["runserver", f"0.0.0.0:{port}"]
     main()

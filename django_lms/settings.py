@@ -15,15 +15,17 @@ print(settings.INSTALLED_APPS)
 
 from pathlib import Path
 import os
+PORT = os.environ.get('PORT', 8000)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 CSRF_TRUSTED_ORIGINS = [
     "https://danjo-lms.onrender.com/",
+    "http://localhost:3000",
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://danjo-lms.onrender.com/",
+    # "https://danjo-lms.onrender.com/",
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
