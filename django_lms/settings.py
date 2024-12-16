@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'rest_framework_simplejwt',
-    'django-cors-headers',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
