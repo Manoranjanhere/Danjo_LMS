@@ -25,7 +25,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    # "https://danjo-lms.onrender.com/",
+    "https://danjo-lms.onrender.com/",
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
