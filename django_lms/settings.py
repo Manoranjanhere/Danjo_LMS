@@ -9,12 +9,21 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from django.conf import settings
+
+print(settings.INSTALLED_APPS)
 
 from pathlib import Path
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+CSRF_TRUSTED_ORIGINS = [
+    "https://danjo-lms.onrender.com/",
+]
+CORS_ALLOWED_ORIGINS = [
+    "https://danjo-lms.onrender.com/",
+]
 
 
 SECRET_KEY = 'django-insecure-j7xv%)66l8u0^8sxnj7()z$zll8&a2*_h2r84yeo9f2fidx8^7'
@@ -38,7 +47,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'rest_framework_simplejwt',
-
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'django_lms.urls'

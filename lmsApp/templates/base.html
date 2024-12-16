@@ -209,74 +209,80 @@
                 $('#pre-loader').remove();
             $('body').removeClass('loading')
         }
-        window.uni_modal = function($title = '', $url = '', $size = "") {
-            start_loader()
-            $.ajax({
-                url: $url,
-                error: err => {
-                    console.log()
-                    alert("An error occured")
-                },
-                success: function(resp) {
-                    if (resp) {
-                        $('#uni_modal .modal-title').html($title)
-                        $('#uni_modal .modal-body').html(resp)
-                        if ($size != '') {
-                            $('#uni_modal .modal-dialog').addClass($size + '  modal-dialog-centered')
-                        } else {
-                            $('#uni_modal .modal-dialog').removeAttr("class").addClass("modal-dialog modal-md modal-dialog-centered")
-                        }
-                        $('#uni_modal').modal({
-                            backdrop: 'static',
-                            keyboard: false,
-                            focus: true
-                        })
-                        $('#uni_modal').modal('show')
-                        end_loader()
+    // Modal Loading Utility
+    window.uni_modal = function(title = '', url = '', size = '') {
+        if (typeof start_loader === "function") start_loader();
+
+        $.ajax({
+            url: url,
+            method: 'GET', // Explicitly specify the HTTP method
+            error: function(err) {
+                console.error('Error loading modal:', err); // Log error details for debugging
+                alert("An error occurred while loading the modal.");
+                if (typeof end_loader === "function") end_loader();
+            },
+            success: function(resp) {
+                if (resp) {
+                    $('#uni_modal .modal-title').html(title);
+                    $('#uni_modal .modal-body').html(resp);
+
+                    const modalDialog = $('#uni_modal .modal-dialog');
+                    if (size) {
+                        modalDialog.removeClass().addClass(`${size} modal-dialog modal-dialog-centered`);
+                    } else {
+                        modalDialog.removeClass().addClass('modal-dialog modal-md modal-dialog-centered');
                     }
+
+                    $('#uni_modal').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        focus: true
+                    }).modal('show');
+
+                    if (typeof end_loader === "function") end_loader();
                 }
-            })
-        }
-        window._conf = function($msg = '', $func = '', $params = []) {
-            $('#confirm_modal #confirm').attr('onclick', $func + "(" + $params.join(',') + ")")
-            $('#confirm_modal .modal-body').html($msg)
-            $('#confirm_modal').modal('show')
-        }
+            }
+        });
+    };
 
-        $(function() {
-            $('#viewer_modal').on('shown.modal.bs', function() {
-                $('#zoom-value').val(100)
-                $('#img-viewer img').css(
-                    'transform',
-                    'scale(1)'
-                )
+    // Confirmation Dialog Utility
+    window._conf = function(msg = '', func = '', params = []) {
+        const confirmBtn = $('#confirm_modal #confirm');
+        confirmBtn.off('click').on('click', () => {
+            if (typeof window[func] === 'function') window[func](...params); // Call function safely
+        });
 
-            })
-            $('#zoom-plus').click(function() {
-                var scale = parseFloat($('#zoom-value').val())
-                if (scale >= 200) return false;
-                scale += 10
-                $('#zoom-value').val(scale)
-                scale = scale / 100
-                $('#img-viewer img').css(
-                    'transform',
-                    'scale(' + (scale) + ')'
-                )
-            })
-            $('#zoom-minus').click(function() {
-                var scale = parseFloat($('#zoom-value').val())
-                if (scale <= 0) return false;
-                scale -= 10
-                $('#zoom-value').val(scale)
-                scale = scale / 100
-                $('#img-viewer img').css(
-                    'transform',
-                    'scale(' + (scale) + ')'
-                )
-            })
+        $('#confirm_modal .modal-body').html(msg);
+        $('#confirm_modal').modal('show');
+    };
 
-        })
-    </script>
+    $(function() {
+        // Image Viewer Modal Logic
+        const imgViewer = $('#img-viewer img');
+        const zoomInput = $('#zoom-value');
+
+        const setZoom = (zoomValue) => {
+            zoomValue = Math.max(0, Math.min(200, zoomValue)); // Limit zoom between 0 and 200
+            zoomInput.val(zoomValue);
+            imgViewer.css('transform', `scale(${zoomValue / 100})`);
+        };
+
+        $('#viewer_modal').on('shown.bs.modal', function() {
+            setZoom(100); // Reset zoom to 100% when modal is shown
+        });
+
+        $('#zoom-plus').click(function() {
+            const currentZoom = parseFloat(zoomInput.val());
+            setZoom(currentZoom + 10); // Increment zoom by 10
+        });
+
+        $('#zoom-minus').click(function() {
+            const currentZoom = parseFloat(zoomInput.val());
+            setZoom(currentZoom - 10); // Decrement zoom by 10
+        });
+    });
+</script>
+
 </body>
 
 </html>
